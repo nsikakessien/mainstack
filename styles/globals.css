@@ -1,0 +1,47 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+  }
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  padding: 16px 16px 0;
+  font-family: "Noto Sans", sans-serif !important;
+}
+
+.fixed-header {
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  border: 2px solid var(#fff);
+  background: #fff;
+  box-shadow: 0px 2px 4px 0px rgba(45, 59, 67, 0.05),
+    0px 2px 6px 0px rgba(45, 59, 67, 0.06);
+  height: 64px;
+}
+
+.fixed-sidebar {
+  position: fixed;
+  padding: 4px 0;
+  width: 48px;
+  align-items: center;
+  border-radius: 100px;
+  margin-top: 310px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: 0px 6px 12px 0px rgba(92, 115, 131, 0.08),
+    0px 4px 8px 0px rgba(92, 115, 131, 0.08);
+}
