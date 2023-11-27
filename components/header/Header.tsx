@@ -1,18 +1,12 @@
 "use client";
+import { UserDetails } from "@api/user/types";
+import { useGetUser } from "@api/user/user";
 import { Dialog, Disclosure, Popover } from "@headlessui/react";
-import {
-  // ArrowPathIcon,
-  // Bars3Icon,
-  // ChartPieIcon,
-  // CursorArrowRaysIcon,
-  // FingerPrintIcon,
-  // SquaresPlusIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 
 interface MenuProp {
   name: string;
@@ -56,8 +50,17 @@ const menu: MenuProp[] = [
 
 const Header = () => {
   const pathname = usePathname();
+  const { data, isLoading } = useGetUser();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const nameInitials = (firstName: string, lastName: string) => {
+    const firstChar = firstName?.charAt(0).toUpperCase();
+    const secondChar = lastName?.charAt(0).toUpperCase();
+    return `${firstChar}${secondChar}`;
+  };
+
+  const userDetails = useMemo(() => data?.data as UserDetails, [data]);
 
   return (
     <header className="fixed-header flex items-center">
@@ -141,7 +144,12 @@ const Header = () => {
                 height={32}
               />
               <div className="absolute top-0 right-0 left-0 bottom-0 flex justify-center items-center">
-                <p className="text-sm font-semibold text-white-100">OJ</p>
+                <p className="text-sm font-semibold text-white-100">
+                  {nameInitials(
+                    userDetails?.first_name,
+                    userDetails?.last_name
+                  )}
+                </p>
               </div>
             </div>
             <Image
@@ -213,80 +221,6 @@ const Header = () => {
         </Dialog.Panel>
       </Dialog>
     </header>
-    // <header className="fixed-header grid lg:grid-cols-3 grid-cols-2 lg:rounded-[100px] z-10">
-    //   <div className="lg:flex hidden lg:justify-between gap-6 lg:gap-0 lg:flex-row flex-col w-full lg:col-span-2">
-    //     <Image
-    //       src="/assets/images/logo.svg"
-    //       alt="mainstack logo"
-    //       width={36}
-    //       height={36}
-    //       className="object-contain"
-    //     />
-
-    //     <nav className="flex gap-5 lg:items-center lg:flex-row flex-col">
-    //       {menu.map((item) => (
-    //         <Link
-    //           className={`flex text-base font-semibold ${
-    //             pathname === item.path
-    //               ? "text-white-100"
-    //               : "text-gray-400 hover:bg-gray-50"
-    //           }  gap-1 items-center cursor-pointer rounded-[100px] py-2 pl-[14px] pr-[18px] ${
-    //             pathname === item.path ? "bg-black-300" : ""
-    //           }`}
-    //           key={item.name}
-    //           href={item.path}
-    //         >
-    //           <Image
-    //             src={pathname === item.path ? item.selectedIcon : item.icon}
-    //             alt="menu icon"
-    //             width={20}
-    //             height={20}
-    //           />
-    //           <p className="">{item.name}</p>
-    //         </Link>
-    //       ))}
-    //     </nav>
-    //   </div>
-
-    //   <div className="lg:hidden  flex"></div>
-
-    //   <div className="flex items-center md:justify-end">
-    //     <Image
-    //       src="/assets/icons/bell.svg"
-    //       alt="notification icon"
-    //       width={20}
-    //       height={20}
-    //       className="lg:mr-7 mr-2"
-    //     />
-    //     <Image
-    //       src="/assets/icons/note.svg"
-    //       alt="notification icon"
-    //       width={20}
-    //       height={20}
-    //       className="lg:mr-[10px] mr-2"
-    //     />
-
-    //     <div className="bg-gray-50 py-1 pl-[5px] pr-3 flex items-center gap-2 rounded-[100px] cursor-pointer">
-    //       <div className="relative">
-    //         <Image
-    //           src="/assets/icons/eclipse.svg"
-    //           alt="black circle"
-    //           width={32}
-    //           height={32}
-    //         />
-    //         <div className="absolute top-0 right-0 left-0 bottom-0 flex justify-center items-center">
-    //           <p className="text-sm font-semibold text-white-100">OJ</p>
-    //         </div>
-    //       </div>
-    //       <Image
-    //         src="/assets/icons/thin-hamburger.svg"
-    //         alt="hamburger icon"
-    //         width={24}
-    //         height={24}
-    //       />
-    //     </div>
-    //   </div>
-    // </header>
   );
 };
 
