@@ -1,5 +1,11 @@
 import axiosInstance from "@api/axiosConfig";
-import { ErrorResponse, Response, Transactions, UserDetails } from "./types";
+import {
+  ErrorResponse,
+  Response,
+  Transactions,
+  UserDetails,
+  Wallet,
+} from "./types";
 
 class User {
   public static async getUser(): Promise<
@@ -28,6 +34,27 @@ class User {
   > {
     try {
       const response = await axiosInstance.get("transactions");
+      const { data } = response || {};
+
+      return {
+        success: true,
+        data,
+      };
+    } catch (error: any) {
+      const errorResponse = error.response;
+      const { data } = errorResponse || {};
+      return {
+        success: false,
+        data,
+      };
+    }
+  }
+
+  public static async getUserWallet(): Promise<
+    Response<Wallet | ErrorResponse | null>
+  > {
+    try {
+      const response = await axiosInstance.get("wallet");
       const { data } = response || {};
 
       return {

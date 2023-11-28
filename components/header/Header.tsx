@@ -1,7 +1,7 @@
 "use client";
 import { UserDetails } from "@api/user/types";
 import { useGetUser } from "@api/user/user";
-import { Dialog, Disclosure, Popover } from "@headlessui/react";
+import { Dialog, Popover } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import Link from "next/link";

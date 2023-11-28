@@ -17,6 +17,8 @@ const config: Config = {
     colors: {
       white: { 100: "#fff" },
       black: { 100: "#000", 300: "#131316" },
+      jade: { 400: "#0EA163" },
+      yellow: { 400: "#A77A07" },
       gray: {
         50: "#EFF1F6",
         400: "#56616B",
