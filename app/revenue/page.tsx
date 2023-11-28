@@ -12,8 +12,10 @@ import moment from "moment";
 Chart.register(...registerables);
 
 const RevenuePage = () => {
-  const [startDate, setStartDate] = useState(moment().subtract(7, "days"));
-  const [endDate, setEndDate] = useState(moment());
+  const [startDate, setStartDate] = useState(
+    moment().subtract(7, "days").format("YYYY-MM-DD")
+  );
+  const [endDate, setEndDate] = useState(moment().format("YYYY-MM-DD"));
   const [filteredTransactions, setFilteredTransactions] = useState<
     Transactions[]
   >([]);
@@ -59,10 +61,10 @@ const RevenuePage = () => {
   };
 
   const data = {
-    labels: ["January", "February", "March", "April", "May"],
+    labels: getDatesBetween(new Date(startDate), new Date(endDate)),
     datasets: [
       {
-        data: [10, 20, 15, 25, 30],
+        data: filteredTransactions.map((item) => item.amount),
         fill: false,
         borderColor: "#FF5403",
         borderWidth: 1,
@@ -77,6 +79,22 @@ const RevenuePage = () => {
       legend: {
         display: false,
       },
+      annotation: {
+        annotations: [
+          {
+            type: "line",
+            mode: "horizontal",
+            scaleID: "y-axis-0",
+            value: data.datasets[0].data.length === 0 ? 50 : undefined,
+            borderColor: "red",
+            borderWidth: 1,
+            label: {
+              enabled: false,
+              content: "Middle Line",
+            },
+          },
+        ],
+      },
     },
     scales: {
       x: {
@@ -86,8 +104,10 @@ const RevenuePage = () => {
         ticks: {
           autoSkip: false,
           callback: (value: any, index: number, values: any) => {
-            if (index === 0 || index === values.length - 1) {
-              return value;
+            if (index === 0) {
+              return moment(startDate).format("MMM D, YYYY");
+            } else if (index === values.length - 1) {
+              return moment(endDate).format("MMM D, YYYY");
             } else {
               return "";
             }
@@ -103,11 +123,14 @@ const RevenuePage = () => {
   useEffect(() => {
     if (transactions?.success) {
       const listOfTransactions = transactions?.data as Transactions[];
-      setFilteredTransactions(listOfTransactions);
+      const filterValues = listOfTransactions.filter((item) =>
+        moment(item.date).isBetween(startDate, endDate, "day")
+      );
+      setFilteredTransactions(filterValues);
     } else {
       setFilteredTransactions([]);
     }
-  }, [transactions]);
+  }, [endDate, startDate, transactions]);
 
   const getStatusColor = (text: string) => {
     switch (text) {
@@ -197,54 +220,81 @@ const RevenuePage = () => {
           </div>
         </div>
 
-        <div className="flex flex-col gap-6">
-          {filteredTransactions?.map((transaction) => (
-            <div
-              key={transaction.payment_reference}
-              className="flex justify-between items-center"
-            >
-              <div className="flex items-center gap-[14.5px]">
-                <Image
-                  src={
-                    transaction.type === "deposit"
-                      ? "./assets/icons/credit-eclipse.svg"
-                      : "./assets/icons/debit-eclipse.svg"
-                  }
-                  alt="deposit logo"
-                  width={48}
-                  height={48}
-                />
-                <div className="flex flex-col gap-[9px]">
-                  <p className="text-base font-medium text-black-300">
-                    {transaction.type === "deposit"
-                      ? transaction?.metadata?.type
-                      : "Cash withdrawal"}
-                  </p>
-                  <p
-                    className={`text-sm font-medium ${
+        {filteredTransactions?.length ? (
+          <div className="flex flex-col gap-6">
+            {filteredTransactions?.map((transaction) => (
+              <div
+                key={transaction.payment_reference}
+                className="flex justify-between items-center"
+              >
+                <div className="flex items-center gap-[14.5px]">
+                  <Image
+                    src={
                       transaction.type === "deposit"
-                        ? "text-gray-400"
-                        : getStatusColor(transaction.status)
-                    }`}
-                  >
-                    {transaction.type === "deposit"
-                      ? transaction?.metadata?.name
-                      : transaction.status}
+                        ? "./assets/icons/credit-eclipse.svg"
+                        : "./assets/icons/debit-eclipse.svg"
+                    }
+                    alt="deposit logo"
+                    width={48}
+                    height={48}
+                  />
+                  <div className="flex flex-col gap-[9px]">
+                    <p className="text-base font-medium text-black-300">
+                      {transaction.type === "deposit"
+                        ? transaction?.metadata?.type
+                        : "Cash withdrawal"}
+                    </p>
+                    <p
+                      className={`text-sm font-medium ${
+                        transaction.type === "deposit"
+                          ? "text-gray-400"
+                          : getStatusColor(transaction.status)
+                      }`}
+                    >
+                      {transaction.type === "deposit"
+                        ? transaction?.metadata?.name
+                        : transaction.status}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <p className="text-base font-bold text-black-300">
+                    {currencyFormatter.format(transaction.amount)}
+                  </p>
+                  <p className="text-gray-400 text-sm font-medium">
+                    {moment(transaction.date).format("MMM DD, YYYY")}
                   </p>
                 </div>
               </div>
+            ))}
+          </div>
+        ) : (
+          <div className="w-full flex justify-center">
+            <div className="flex flex-col items-start">
+              <Image
+                src="./assets/icons/empty-icon.svg"
+                alt="empty transaction icon"
+                className="mb-5"
+                width={48}
+                height={48}
+              />
 
-              <div className="flex flex-col gap-1">
-                <p className="text-base font-bold text-black-300">
-                  {currencyFormatter.format(transaction.amount)}
+              <div className="flex flex-col gap-[10px] mb-8">
+                <p className="text-black-300 text-[28px] font-bold max-w-[369px]">
+                  No matching transaction found for the selected filter
                 </p>
-                <p className="text-gray-400 text-sm font-medium">
-                  {moment(transaction.date).format("MMM DD, YYYY")}
+                <p className="text-base text-gray-400 font-medium">
+                  Change your filters to see more results, or add a new product.
                 </p>
               </div>
+
+              <button className="text-base font-semibold text-black-300 px-6 py-3 bg-gray-50 rounded-[100px]">
+                Clear Filter
+              </button>
             </div>
-          ))}
-        </div>
+          </div>
+        )}
       </div>
     </section>
   );
