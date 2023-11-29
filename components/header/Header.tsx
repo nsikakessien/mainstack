@@ -1,6 +1,7 @@
 "use client";
 import { UserDetails } from "@api/user/types";
 import { useGetUser } from "@api/user/user";
+import Modal from "@components/modal/Modal";
 import { Dialog, Popover } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
@@ -162,7 +163,49 @@ const Header = () => {
         </div>
       </nav>
 
-      <Dialog
+      <Modal visible={mobileMenuOpen} onClose={setMobileMenuOpen}>
+        <div className="flex items-center justify-between">
+          <Link href="/">
+            <Image
+              src="/assets/images/logo.svg"
+              alt="mainstack logo"
+              width={36}
+              height={36}
+              className="object-contain"
+            />
+          </Link>
+        </div>
+        <div className="mt-6 flow-root">
+          <div className="-my-6 divide-y divide-gray-500/10">
+            <div className="space-y-2 py-6">
+              {menu.map((item) => (
+                <Link
+                  className={`flex text-base font-semibold ${
+                    pathname === item.path
+                      ? "text-white-100"
+                      : "text-gray-400 hover:bg-gray-50"
+                  }  gap-1 items-center rounded-[100px] py-2 pl-[14px] pr-[18px] ${
+                    pathname === item.path ? "bg-black-300" : ""
+                  }`}
+                  key={item.name}
+                  href={item.path}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Image
+                    src={pathname === item.path ? item.selectedIcon : item.icon}
+                    alt="menu icon"
+                    width={20}
+                    height={20}
+                  />
+                  <p className="">{item.name}</p>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      </Modal>
+
+      {/* <Dialog
         as="div"
         className="lg:hidden"
         open={mobileMenuOpen}
@@ -219,7 +262,7 @@ const Header = () => {
             </div>
           </div>
         </Dialog.Panel>
-      </Dialog>
+      </Dialog> */}
     </header>
   );
 };

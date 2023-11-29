@@ -64,7 +64,12 @@ const RevenuePage = () => {
     labels: getDatesBetween(new Date(startDate), new Date(endDate)),
     datasets: [
       {
-        data: filteredTransactions.map((item) => item.amount),
+        data:
+          filteredTransactions.length > 0
+            ? filteredTransactions.map((item) => item.amount)
+            : Array(
+                getDatesBetween(new Date(startDate), new Date(endDate)).length
+              ).fill(50),
         fill: false,
         borderColor: "#FF5403",
         borderWidth: 1,
@@ -78,22 +83,6 @@ const RevenuePage = () => {
     plugins: {
       legend: {
         display: false,
-      },
-      annotation: {
-        annotations: [
-          {
-            type: "line",
-            mode: "horizontal",
-            scaleID: "y-axis-0",
-            value: data.datasets[0].data.length === 0 ? 50 : undefined,
-            borderColor: "red",
-            borderWidth: 1,
-            label: {
-              enabled: false,
-              content: "Middle Line",
-            },
-          },
-        ],
       },
     },
     scales: {
@@ -147,9 +136,9 @@ const RevenuePage = () => {
 
   return (
     <section className="lg:px-[140px] pt-16">
-      <div className="flex justify-between w-full mb-24">
-        <div className="flex flex-col w-2/3">
-          <div className="flex gap-16">
+      <div className="flex lg:justify-between lg:flex-row items-center flex-col lg:gap-0 gap-8 w-full mb-24">
+        <div className="flex flex-col lg:w-2/3 w-full justify-center">
+          <div className="flex lg:gap-16 gap-3">
             <div className="flex flex-col gap-2">
               <p className="text-sm font-medium text-gray-400 text-left">
                 Available Balance
@@ -163,7 +152,7 @@ const RevenuePage = () => {
               Withdraw
             </button>
           </div>
-          <div className="">
+          <div className="flex justify-center">
             <Line options={options} data={data} />
           </div>
         </div>
@@ -192,7 +181,7 @@ const RevenuePage = () => {
       </div>
 
       <div className="flex flex-col gap-[57px]">
-        <div className="flex w-full justify-between">
+        <div className="flex w-full lg:justify-between lg:flex-row flex-col lg:gap-0 gap-4">
           <div className="flex flex-col">
             <p className="text-black-300 text-2xl font-bold">{`${filteredTransactions?.length} Transactions`}</p>
             <p>Your transactions for the last 7 days</p>
