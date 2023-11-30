@@ -29,6 +29,7 @@ const RevenuePage = () => {
     Transactions[]
   >([]);
   const [openFilter, setOpenFilter] = useState(false);
+  const [applyFilter, setApplyFilter] = useState(false);
   const [transactionType, setTransactionType] = useState<Data[]>([]);
   const [transactionStatus, setTransactionStatus] = useState<Data[]>([]);
   const [filterCount, setFilterCount] = useState(0);
@@ -126,12 +127,27 @@ const RevenuePage = () => {
     },
   };
 
+  const clearFilter = () => {
+    setTransactionStatus([]);
+    setTransactionType([]);
+    setStartDate({
+      year: moment().subtract(7, "days").year(),
+      month: moment().subtract(7, "days").month() + 1,
+      day: moment().subtract(7, "days").date(),
+    });
+    setEndDate({
+      year: moment().year(),
+      month: moment().month() + 1,
+      day: moment().date(),
+    });
+  };
+
   useEffect(() => {
     if (transactions?.success) {
       const listOfTransactions = transactions?.data as Transactions[];
       let filterValues: Transactions[] = listOfTransactions;
+
       if (startDate?.day && endDate?.day) {
-        console.log("oooo");
         filterValues = listOfTransactions.filter(
           (item) =>
             moment(item.date).isBetween(
@@ -170,11 +186,14 @@ const RevenuePage = () => {
 
         filterValues = arr;
       }
+
       setFilteredTransactions(filterValues);
+      setApplyFilter(false);
     } else {
       setFilteredTransactions([]);
     }
-  }, [endDate, startDate, transactionStatus, transactionType, transactions]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [applyFilter]);
 
   const getStatusColor = (text: string) => {
     switch (text) {
@@ -285,7 +304,8 @@ const RevenuePage = () => {
                 startDate.year === moment().subtract(7, "days").year() &&
                 endDate?.day === moment().date() &&
                 endDate.month === moment().month() + 1 &&
-                endDate.year === moment().year()
+                endDate.year === moment().year() &&
+                !applyFilter
                   ? "Your transactions for the last 7 days"
                   : "Your transactions for All Time"}
               </p>
@@ -395,20 +415,7 @@ const RevenuePage = () => {
 
                 <button
                   className="text-base font-semibold text-black-300 px-6 py-3 bg-gray-50 rounded-[100px]"
-                  onClick={() => {
-                    setTransactionStatus([]);
-                    setTransactionType([]);
-                    setStartDate({
-                      year: moment().subtract(7, "days").year(),
-                      month: moment().subtract(7, "days").month() + 1,
-                      day: moment().subtract(7, "days").date(),
-                    });
-                    setEndDate({
-                      year: moment().year(),
-                      month: moment().month() + 1,
-                      day: moment().date(),
-                    });
-                  }}
+                  onClick={() => clearFilter()}
                 >
                   Clear Filter
                 </button>
@@ -428,6 +435,8 @@ const RevenuePage = () => {
         handleTransactionSelect={handleTransactionSelect}
         handleTransactionStatusSelect={handleTransactionStatusSelect}
         setEndDate={setEndDate}
+        setApplyFilter={setApplyFilter}
+        clearFilter={clearFilter}
       />
     </>
   );

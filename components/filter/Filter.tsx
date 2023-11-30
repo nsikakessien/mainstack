@@ -12,6 +12,8 @@ interface Props {
   endDate: DayValue;
   setStartDate: React.Dispatch<React.SetStateAction<DayValue>>;
   setEndDate: React.Dispatch<React.SetStateAction<DayValue>>;
+  setApplyFilter: React.Dispatch<React.SetStateAction<boolean>>;
+  clearFilter: () => void;
   handleTransactionSelect: (value: Data) => void;
   handleTransactionStatusSelect: (value: Data) => void;
   transactionType: Data[];
@@ -77,6 +79,8 @@ const Filter = ({
   handleTransactionStatusSelect,
   transactionStatus,
   transactionType,
+  setApplyFilter,
+  clearFilter,
 }: Props) => {
   return (
     <Modal visible={visible} onClose={onclose} title="Filter">
@@ -136,6 +140,24 @@ const Filter = ({
             multiSelect
           />
         </div>
+      </div>
+
+      <div className="fixed bottom-0 left-0 right-0 px-6 py-5 flex gap-3">
+        <button
+          className="w-full py-3 flex justify-center bg-white-100 rounded-[100px] text-black-300 border border-gray-50 text-base font-semibold"
+          onClick={() => clearFilter()}
+        >
+          Clear
+        </button>
+        <button
+          className="w-full py-3 flex justify-center bg-black-100 rounded-[100px] text-base font-semibold text-white-100"
+          onClick={() => {
+            setApplyFilter(true);
+            onclose(false);
+          }}
+        >
+          Apply
+        </button>
       </div>
     </Modal>
   );
