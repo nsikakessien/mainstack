@@ -5,18 +5,16 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 interface Props {
   visible: boolean;
   onClose(value: boolean): void;
+  title?: string;
   children: React.ReactNode;
   fullWidth?: boolean;
 }
-
-export const ModalTitle: React.FC<{ title: string }> = ({ title }) => (
-  <h1 className="font-medium text-grey-900 font-sans text-md mb-2">{title}</h1>
-);
 
 const Modal = ({
   visible,
   onClose,
   children,
+  title = "",
   fullWidth,
 }: Props): JSX.Element => (
   <Transition.Root show={visible} as={Fragment}>
@@ -47,14 +45,13 @@ const Modal = ({
           }`}
         >
           <Dialog.Panel className="flex min-h-full w-full bg-white-100 transform shadow-xl transition-all">
-            <div className="px-4 md:px-10 py-6 w-full relative">
-              <div
-                className="flex top-5 z-10 justify-end"
-                onClick={() => onClose(false)}
-              >
+            <div className="pl-[22px] pr-3 py-6 w-full relative">
+              <div className="flex top-5 z-10 justify-between">
+                <h1 className="text-black-300 text-2xl font-bold">{title}</h1>
                 <XMarkIcon
                   className="h-6 w-6 text-black cursor-pointer"
                   aria-hidden="true"
+                  onClick={() => onClose(false)}
                 />
               </div>
               <div data-testid="modal" className="mt-4">

@@ -1,0 +1,77 @@
+.calender-override .Calendar {
+  width: 100% !important;
+  border-radius: 16.851px !important;
+  background: #fff !important;
+  padding: 33.701px !important;
+  box-shadow: 0px 6px 12px 0px rgba(92, 115, 131, 0.08),
+    0px 4px 8px 0px rgba(92, 115, 131, 0.08) !important;
+}
+
+.calender-override .Calendar__header {
+  padding: 0 !important;
+  margin-bottom: 14.32px !important;
+}
+
+.calender-override .Calendar__weekDays {
+  padding: 0 !important;
+}
+
+.calender-override .Calendar__section.-shown {
+  padding: 0 !important;
+}
+
+.calender-override .Calendar__day.-selected {
+  border-radius: 50% !important;
+  background-color: #131316 !important;
+  color: #fff !important;
+}
+
+.calender-override .Calendar__day {
+  margin: 0 !important;
+  color: #131316 !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+}
+
+.calender-override .Calendar__section {
+  display: flex;
+  flex-direction: column;
+  gap: 13.48px !important;
+}
+
+.calender-override .Calendar__monthYear > * {
+  padding: 0 !important;
+}
+
+.calender-override .Calendar__monthText::after {
+  content: "," !important;
+}
+.calender-override .Calendar__monthText,
+.calender-override .Calendar__yearText {
+  color: #131316 !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+}
+
+.calender-override .Calendar__monthArrow {
+  background-image: url("../../public/assets/icons/black-caret-left.svg") !important;
+  width: 32px;
+  height: 32px;
+}
+
+.calender-override .Calendar__monthArrowWrapper.-right {
+  transform: rotate(0deg) !important;
+}
+
+.calender-override .Calendar__monthArrowWrapper.-left {
+  transform: rotate(180deg) !important;
+}
+
+.calender-override .Calendar__weekDay {
+  color: #56616b !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+}
+
+.calender-override .Calendar__day.-ltr {
+}

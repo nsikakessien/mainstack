@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@hassanmojab/react-modern-calendar-datepicker": "^3.1.7",
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.0.18",
     "@remix-run/react": "^2.3.1",
@@ -18,9 +19,12 @@
     "next": "14.0.3",
     "react": "^18",
     "react-chartjs-2": "^5.2.0",
+    "react-datepicker": "^4.24.0",
     "react-dom": "^18",
+    "react-modern-calendar-datepicker": "^3.1.6",
     "react-query": "^3.39.3",
-    "use-dehydrated-state": "^0.1.0"
+    "use-dehydrated-state": "^0.1.0",
+    "uuidv4": "^6.2.13"
   },
   "devDependencies": {
     "@svgr/webpack": "^8.1.0",
