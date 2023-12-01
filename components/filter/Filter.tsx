@@ -1,6 +1,7 @@
 import DateSelect from "@components/date-select/DateSelect";
 import Modal from "@components/modal/Modal";
 import Select, { Data } from "@components/select/Select";
+import moment from "moment";
 import React, { useState } from "react";
 import { DayValue } from "react-modern-calendar-datepicker";
 import { uuid } from "uuidv4";
@@ -8,16 +9,19 @@ import { uuid } from "uuidv4";
 interface Props {
   visible: boolean;
   onclose: (shouldClose: boolean) => void;
-  startDate: DayValue;
-  endDate: DayValue;
+  tempStartDate: DayValue;
+  tempEndDate: DayValue;
+  tempTransactionType: Data[];
+  tempTransactionStatus: Data[];
   setStartDate: React.Dispatch<React.SetStateAction<DayValue>>;
   setEndDate: React.Dispatch<React.SetStateAction<DayValue>>;
-  setApplyFilter: React.Dispatch<React.SetStateAction<boolean>>;
+  setTempStartDate: React.Dispatch<React.SetStateAction<DayValue>>;
+  setTempEndDate: React.Dispatch<React.SetStateAction<DayValue>>;
+  setTransactionType: React.Dispatch<React.SetStateAction<Data[]>>;
+  setTransactionStatus: React.Dispatch<React.SetStateAction<Data[]>>;
+  setTempTransactionType: React.Dispatch<React.SetStateAction<Data[]>>;
+  setTempTransactionStatus: React.Dispatch<React.SetStateAction<Data[]>>;
   clearFilter: () => void;
-  handleTransactionSelect: (value: Data) => void;
-  handleTransactionStatusSelect: (value: Data) => void;
-  transactionType: Data[];
-  transactionStatus: Data[];
 }
 
 const transactionFilters = [
@@ -71,17 +75,49 @@ const transactionStatusFilter = [
 const Filter = ({
   visible,
   onclose,
-  startDate,
-  endDate,
+  tempEndDate,
+  tempStartDate,
+  setTempEndDate,
+  setTempStartDate,
+  setTempTransactionStatus,
+  setTempTransactionType,
+  tempTransactionStatus,
+  tempTransactionType,
   setStartDate,
   setEndDate,
-  handleTransactionSelect,
-  handleTransactionStatusSelect,
-  transactionStatus,
-  transactionType,
-  setApplyFilter,
+  setTransactionStatus,
+  setTransactionType,
   clearFilter,
 }: Props) => {
+  const handleTransactionSelect = (value: Data) => {
+    const isSelected = tempTransactionType.find(
+      (val) => val.name === value.name
+    );
+
+    if (isSelected) {
+      const newTransactions = tempTransactionType.filter(
+        (val) => val.name !== value.name
+      );
+      setTempTransactionType(newTransactions);
+    } else {
+      setTempTransactionType([...tempTransactionType, value]);
+    }
+  };
+
+  const handleTransactionStatusSelect = (value: Data) => {
+    const isSelected = tempTransactionStatus.find(
+      (val) => val.name === value.name
+    );
+
+    if (isSelected) {
+      const newTransactions = tempTransactionStatus.filter(
+        (val) => val.name !== value.name
+      );
+      setTempTransactionStatus(newTransactions);
+    } else {
+      setTempTransactionStatus([...tempTransactionStatus, value]);
+    }
+  };
   return (
     <Modal visible={visible} onClose={onclose} title="Filter">
       <div className="flex items-center justify-between mb-7">
@@ -103,11 +139,11 @@ const Filter = ({
         <p className="text-base font-semibold text-black-300">Date Range</p>
         <div className="w-full pr-[10px]">
           <DateSelect
-            startValue={startDate}
-            endValue={endDate}
+            startValue={tempStartDate}
+            endValue={tempEndDate}
             onChange={() => {}}
-            setStartValue={setStartDate}
-            setEndValue={setEndDate}
+            setStartValue={setTempStartDate}
+            setEndValue={setTempEndDate}
           />
         </div>
       </div>
@@ -118,7 +154,7 @@ const Filter = ({
         </p>
         <div className="w-full pr-[10px]">
           <Select
-            value={transactionType}
+            value={tempTransactionType}
             placeholder="Select Transaction Type"
             list={transactionFilters}
             onChange={handleTransactionSelect}
@@ -133,7 +169,7 @@ const Filter = ({
         </p>
         <div className="w-full pr-[10px]">
           <Select
-            value={transactionStatus}
+            value={tempTransactionStatus}
             placeholder="Select Transaction Status"
             list={transactionStatusFilter}
             onChange={handleTransactionStatusSelect}
@@ -145,14 +181,19 @@ const Filter = ({
       <div className="fixed bottom-0 left-0 right-0 px-6 py-5 flex gap-3">
         <button
           className="w-full py-3 flex justify-center bg-white-100 rounded-[100px] text-black-300 border border-gray-50 text-base font-semibold"
-          onClick={() => clearFilter()}
+          onClick={() => {
+            clearFilter();
+          }}
         >
           Clear
         </button>
         <button
           className="w-full py-3 flex justify-center bg-black-100 rounded-[100px] text-base font-semibold text-white-100"
           onClick={() => {
-            setApplyFilter(true);
+            setEndDate(tempEndDate);
+            setStartDate(tempStartDate);
+            setTransactionStatus(tempTransactionStatus);
+            setTransactionType(tempTransactionType);
             onclose(false);
           }}
         >

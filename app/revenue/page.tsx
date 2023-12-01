@@ -29,10 +29,23 @@ const RevenuePage = () => {
     Transactions[]
   >([]);
   const [openFilter, setOpenFilter] = useState(false);
-  const [applyFilter, setApplyFilter] = useState(false);
   const [transactionType, setTransactionType] = useState<Data[]>([]);
   const [transactionStatus, setTransactionStatus] = useState<Data[]>([]);
   const [filterCount, setFilterCount] = useState(0);
+  const [tempStartDate, setTempStartDate] = useState<DayValue>({
+    year: moment().subtract(7, "days").year(),
+    month: moment().subtract(7, "days").month() + 1,
+    day: moment().subtract(7, "days").date(),
+  });
+  const [tempEndDate, setTempEndDate] = useState<DayValue>({
+    year: moment().year(),
+    month: moment().month() + 1,
+    day: moment().date(),
+  });
+  const [tempTransactionType, setTempTransactionType] = useState<Data[]>([]);
+  const [tempTransactionStatus, setTempTransactionStatus] = useState<Data[]>(
+    []
+  );
 
   const { data: transactions, isLoading } = useGetTransactions();
   const { data: walletData, isLoading: loadingWallet } = useGetWallet();
@@ -140,6 +153,18 @@ const RevenuePage = () => {
       month: moment().month() + 1,
       day: moment().date(),
     });
+    setTempStartDate({
+      year: moment().subtract(7, "days").year(),
+      month: moment().subtract(7, "days").month() + 1,
+      day: moment().subtract(7, "days").date(),
+    });
+    setTempEndDate({
+      year: moment().year(),
+      month: moment().month() + 1,
+      day: moment().date(),
+    });
+    setTempTransactionStatus([]);
+    setTempTransactionType([]);
   };
 
   useEffect(() => {
@@ -188,12 +213,17 @@ const RevenuePage = () => {
       }
 
       setFilteredTransactions(filterValues);
-      setApplyFilter(false);
     } else {
       setFilteredTransactions([]);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [applyFilter]);
+  }, [
+    endDate,
+    startDate,
+    transactionStatus,
+    transactionType,
+    transactions?.data,
+    transactions?.success,
+  ]);
 
   const getStatusColor = (text: string) => {
     switch (text) {
@@ -203,32 +233,6 @@ const RevenuePage = () => {
         return "text-jade-400";
       default:
         return "text-gray-400";
-    }
-  };
-
-  const handleTransactionSelect = (value: Data) => {
-    const isSelected = transactionType.find((val) => val.name === value.name);
-
-    if (isSelected) {
-      const newTransactions = transactionType.filter(
-        (val) => val.name !== value.name
-      );
-      setTransactionType(newTransactions);
-    } else {
-      setTransactionType([...transactionType, value]);
-    }
-  };
-
-  const handleTransactionStatusSelect = (value: Data) => {
-    const isSelected = transactionStatus.find((val) => val.name === value.name);
-
-    if (isSelected) {
-      const newTransactions = transactionStatus.filter(
-        (val) => val.name !== value.name
-      );
-      setTransactionStatus(newTransactions);
-    } else {
-      setTransactionStatus([...transactionStatus, value]);
     }
   };
 
@@ -304,8 +308,7 @@ const RevenuePage = () => {
                 startDate.year === moment().subtract(7, "days").year() &&
                 endDate?.day === moment().date() &&
                 endDate.month === moment().month() + 1 &&
-                endDate.year === moment().year() &&
-                !applyFilter
+                endDate.year === moment().year()
                   ? "Your transactions for the last 7 days"
                   : "Your transactions for All Time"}
               </p>
@@ -427,15 +430,18 @@ const RevenuePage = () => {
       <Filter
         visible={openFilter}
         onclose={setOpenFilter}
-        startDate={startDate}
-        endDate={endDate}
+        tempEndDate={tempEndDate}
+        tempStartDate={tempStartDate}
         setStartDate={setStartDate}
-        transactionType={transactionType}
-        transactionStatus={transactionStatus}
-        handleTransactionSelect={handleTransactionSelect}
-        handleTransactionStatusSelect={handleTransactionStatusSelect}
         setEndDate={setEndDate}
-        setApplyFilter={setApplyFilter}
+        setTempEndDate={setTempEndDate}
+        setTempStartDate={setTempStartDate}
+        tempTransactionStatus={tempTransactionStatus}
+        tempTransactionType={tempTransactionType}
+        setTransactionStatus={setTransactionStatus}
+        setTransactionType={setTransactionType}
+        setTempTransactionStatus={setTempTransactionStatus}
+        setTempTransactionType={setTempTransactionType}
         clearFilter={clearFilter}
       />
     </>
