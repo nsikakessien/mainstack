@@ -1,8 +1,7 @@
 import DateSelect from "@components/date-select/DateSelect";
 import Modal from "@components/modal/Modal";
 import Select, { Data } from "@components/select/Select";
-import moment from "moment";
-import React, { useState } from "react";
+import React from "react";
 import { DayValue } from "react-modern-calendar-datepicker";
 import { uuid } from "uuidv4";
 

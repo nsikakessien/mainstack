@@ -1,4 +1,4 @@
-import { Listbox } from "@headlessui/react";
+import { Listbox } from "../../node_modules/@headlessui/react";
 import React, { useState } from "react";
 import Image from "next/image";
 
@@ -85,6 +85,7 @@ const Select = ({
             >
               {list.map((item) => (
                 <Listbox.Option
+                  data-testid="option"
                   key={item.id}
                   value={item}
                   className="p-[14px] flex gap-3 items-center cursor-pointer"
